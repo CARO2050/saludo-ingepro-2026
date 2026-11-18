@@ -18,7 +18,8 @@ video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; backgr
   border: 1.5px solid rgba(233, 229, 214, 0.7); background: rgba(3, 40, 63, 0.7);
   cursor: pointer;
 }
-#sonido[hidden] { display: none; }
+#sonido[hidden], #capa[hidden] { display: none; }
+#capa { position: absolute; inset: 0; cursor: pointer; }
 #sonido:focus-visible { outline: 3px solid var(--verde); outline-offset: 4px; }
 #sonido svg { width: 22px; height: 22px; fill: var(--hueso); }
 </style>
@@ -26,6 +27,7 @@ video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; backgr
 <body>
 <div class="escena">
   <video id="v" src="saludo.mp4" poster="portada.jpg" playsinline preload="auto" controls></video>
+  <div id="capa" hidden></div>
   <button id="sonido" type="button" aria-label="Activar sonido" title="Activar sonido" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.3 8.9l1.4-1.4L20 9.8l2.3-2.3 1.4 1.4-2.3 2.3 2.3 2.3-1.4 1.4-2.3-2.3-2.3 2.3-1.4-1.4 2.3-2.3z"/></svg>
   </button>
@@ -33,29 +35,48 @@ video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; backgr
 <script>
 const v = document.getElementById('v');
 const sonido = document.getElementById('sonido');
+const capa = document.getElementById('capa');
+
+function pantallaCompleta() {
+  const el = document.documentElement;
+  try {
+    if (el.requestFullscreen) { el.requestFullscreen().catch(() => {}); }
+    else if (el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); }
+    else if (v.webkitEnterFullscreen) { v.webkitEnterFullscreen(); }
+  } catch (e) {}
+}
+
+function salirPantallaCompleta() {
+  try {
+    if (document.fullscreenElement && document.exitFullscreen) { document.exitFullscreen().catch(() => {}); }
+    else if (document.webkitFullscreenElement && document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+    else if (v.webkitDisplayingFullscreen && v.webkitExitFullscreen) { v.webkitExitFullscreen(); }
+  } catch (e) {}
+}
+
+function primerToque(e) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  capa.hidden = true; sonido.hidden = true;
+  pantallaCompleta();
+  if (v.muted) { v.muted = false; v.currentTime = 0; }
+  v.play().catch(() => {});
+}
 
 async function arrancar() {
   try {
     v.muted = false;
     await v.play();
   } catch (e) {
-    try {
-      v.muted = true;
-      await v.play();
-      sonido.hidden = false;
-    } catch (e2) { /* queda con los controles para darle play */ }
+    try { v.muted = true; await v.play(); } catch (e2) {}
   }
+  capa.hidden = false;
+  sonido.hidden = !v.muted;
 }
 
-function activarSonido() {
-  if (!v.muted) return;
-  v.muted = false; v.currentTime = 0; v.play();
-  sonido.hidden = true;
-}
-sonido.addEventListener('click', (e) => { e.stopPropagation(); activarSonido(); });
-document.addEventListener('pointerdown', () => { if (v.muted) activarSonido(); }, { once: true });
+capa.addEventListener('click', primerToque);
+sonido.addEventListener('click', primerToque);
 v.addEventListener('volumechange', () => { if (!v.muted) sonido.hidden = true; });
-v.addEventListener('ended', () => { sonido.hidden = true; });
+v.addEventListener('ended', () => { sonido.hidden = true; capa.hidden = true; v.currentTime = 0; salirPantallaCompleta(); });
 arrancar();
 </script>
 </body>
