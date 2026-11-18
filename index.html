@@ -7,7 +7,7 @@
 <meta property="og:title" content="Felices fiestas · Ingepro">
 <meta property="og:image" content="portada.jpg">
 <style>
-:root { --fondo: #03283f; --verde: #4DB69C; --hueso: #E9E5D6; color-scheme: dark; }
+:root { --fondo: #002440; --verde: #4DB69C; --hueso: #E9E5D6; color-scheme: dark; }
 html, body { margin: 0; height: 100%; background: var(--fondo); overflow: hidden; }
 .escena { position: fixed; inset: 0; display: grid; place-items: center; }
 video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; background: var(--fondo); display: block; }
@@ -34,6 +34,7 @@ video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; backgr
 </div>
 <script>
 const v = document.getElementById('v');
+if (window.innerWidth > window.innerHeight) { v.poster = 'portada-ancho.jpg'; v.src = 'saludo-ancho.mp4'; }
 const sonido = document.getElementById('sonido');
 const capa = document.getElementById('capa');
 
