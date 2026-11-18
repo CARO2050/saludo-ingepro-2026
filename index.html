@@ -11,31 +11,71 @@
 html, body { margin: 0; height: 100%; background: var(--fondo); overflow: hidden; }
 .escena { position: fixed; inset: 0; display: grid; place-items: center; }
 video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; background: var(--fondo); display: block; }
+button { font: 600 15px/1 "Helvetica Neue", Arial, sans-serif; color: var(--hueso); cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--verde); outline-offset: 4px; }
+button[hidden] { display: none; }
 #play {
   position: absolute; inset: 0; margin: auto;
   width: 88px; height: 88px; border-radius: 50%;
   border: 2px solid var(--hueso); background: rgba(3, 40, 63, 0.55);
-  cursor: pointer; display: grid; place-items: center;
+  display: grid; place-items: center;
 }
-#play:focus-visible { outline: 3px solid var(--verde); outline-offset: 4px; }
 #play svg { width: 34px; height: 34px; margin-left: 6px; fill: var(--hueso); }
-#play[hidden] { display: none; }
+#sonido {
+  position: absolute; left: 50%; bottom: max(28px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 999px;
+  border: 1.5px solid var(--hueso); background: rgba(3, 40, 63, 0.75);
+  letter-spacing: 0.02em;
+}
+#sonido svg { width: 20px; height: 20px; fill: var(--hueso); }
 </style>
 </head>
 <body>
 <div class="escena">
   <video id="v" src="saludo.mp4" poster="portada.jpg" playsinline preload="auto"></video>
-  <button id="play" type="button" aria-label="Reproducir saludo">
+  <button id="play" type="button" aria-label="Reproducir saludo" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l16 9-16 9z"/></svg>
+  </button>
+  <button id="sonido" type="button" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+    Activar sonido
   </button>
 </div>
 <script>
 const v = document.getElementById('v');
-const b = document.getElementById('play');
-function reproducir() { b.hidden = true; v.controls = true; v.play(); }
-b.addEventListener('click', reproducir);
-v.addEventListener('click', () => { if (!b.hidden) reproducir(); });
-v.addEventListener('ended', () => { v.controls = false; b.hidden = false; v.currentTime = 0; });
+const play = document.getElementById('play');
+const sonido = document.getElementById('sonido');
+
+function conSonido() {
+  sonido.hidden = true; play.hidden = true;
+  v.muted = false; v.currentTime = 0; v.controls = true;
+  v.play().catch(() => { play.hidden = false; });
+}
+
+async function arrancar() {
+  try {
+    v.muted = false;
+    await v.play();
+    v.controls = true;
+  } catch (e) {
+    try {
+      v.muted = true;
+      await v.play();
+      sonido.hidden = false;
+    } catch (e2) {
+      play.hidden = false;
+    }
+  }
+}
+
+play.addEventListener('click', conSonido);
+sonido.addEventListener('click', conSonido);
+v.addEventListener('ended', () => {
+  v.controls = false; sonido.hidden = true; play.hidden = false; v.currentTime = 0;
+});
+arrancar();
 </script>
 </body>
 </html>
