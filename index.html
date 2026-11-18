@@ -4,127 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Saludo de fin de año Ingepro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<meta property="og:title" content="Felices fiestas · Ingepro">
+<meta property="og:image" content="portada.jpg">
 <style>
-:root {
-  /* Layout: una sola columna centrada; video como pieza principal y un rótulo de plano como firma. */
-  --fondo: #03283f;
-  --azul: #0D3B65;
-  --verde: #4DB69C;
-  --hueso: #E9E5D6;
-  --gris: #9fb0bd;
-  --linea: rgba(233, 229, 214, 0.18);
-  --display: "Cormorant Garamond", "Orpheus Pro", Georgia, serif;
-  --cuerpo: "Archivo", "Aktiv Grotesk", "Helvetica Neue", Arial, sans-serif;
-  color-scheme: dark;
+:root { --fondo: #03283f; --verde: #4DB69C; --hueso: #E9E5D6; color-scheme: dark; }
+html, body { margin: 0; height: 100%; background: var(--fondo); overflow: hidden; }
+.escena { position: fixed; inset: 0; display: grid; place-items: center; }
+video { width: 100vw; height: 100vh; height: 100dvh; object-fit: contain; background: var(--fondo); display: block; }
+#play {
+  position: absolute; inset: 0; margin: auto;
+  width: 88px; height: 88px; border-radius: 50%;
+  border: 2px solid var(--hueso); background: rgba(3, 40, 63, 0.55);
+  cursor: pointer; display: grid; place-items: center;
 }
-* { box-sizing: border-box; }
-html, body { margin: 0; }
-body {
-  background: var(--fondo);
-  background-image:
-    linear-gradient(var(--linea) 1px, transparent 1px),
-    linear-gradient(90deg, var(--linea) 1px, transparent 1px);
-  background-size: 48px 48px;
-  background-position: center top;
-  color: var(--hueso);
-  font-family: var(--cuerpo);
-  font-size: 17px;
-  line-height: 1.6;
-  font-style: normal;
-}
-body::before {
-  content: "";
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 35%, rgba(3,40,63,0.55) 0%, var(--fondo) 75%);
-  pointer-events: none;
-  z-index: 0;
-}
-main {
-  position: relative; z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 56px 20px 64px;
-  display: grid;
-  gap: 36px;
-}
-header { display: grid; gap: 10px; text-align: center; }
-.cota {
-  font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--verde); font-weight: 600;
-}
-h1 {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: clamp(40px, 7vw, 64px);
-  line-height: 1.05;
-  letter-spacing: 0.01em;
-  margin: 0;
-  text-wrap: balance;
-}
-.video {
-  border: 1px solid var(--linea);
-  background: #021e30;
-  padding: 10px;
-  position: relative;
-}
-.video::before, .video::after {
-  content: ""; position: absolute; width: 18px; height: 18px;
-  border-color: var(--verde); border-style: solid;
-}
-.video::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-.video::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-video { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; background: var(--fondo); }
-.mensaje { max-width: 60ch; margin: 0 auto; text-align: center; display: grid; gap: 14px; }
-.mensaje p { margin: 0; color: var(--hueso); }
-.firma { font-family: var(--display); font-size: 24px; font-weight: 600; color: var(--hueso); }
-.rotulo {
-  border: 1px solid var(--linea);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  font-size: 12px;
-  background: rgba(2, 30, 48, 0.85);
-}
-.rotulo div { padding: 10px 12px; border-right: 1px solid var(--linea); display: grid; gap: 2px; }
-.rotulo div:last-child { border-right: 0; }
-.rotulo span { color: var(--gris); text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px; }
-.rotulo strong { font-weight: 500; color: var(--hueso); }
-footer { text-align: center; font-size: 13px; color: var(--gris); letter-spacing: 0.04em; }
-@media (max-width: 520px) {
-  main { padding-top: 40px; gap: 28px; }
-  .rotulo { grid-template-columns: repeat(2, 1fr); }
-  .rotulo div:nth-child(2) { border-right: 0; }
-  .rotulo div:nth-child(-n+2) { border-bottom: 1px solid var(--linea); }
-}
+#play:focus-visible { outline: 3px solid var(--verde); outline-offset: 4px; }
+#play svg { width: 34px; height: 34px; margin-left: 6px; fill: var(--hueso); }
+#play[hidden] { display: none; }
 </style>
 </head>
 <body>
-<main>
-  <header>
-    <div class="cota">Fin de año 2026</div>
-    <h1>Felices fiestas</h1>
-  </header>
-
-  <div class="video">
-    <video src="saludo.mp4" poster="portada.jpg" controls playsinline preload="metadata"></video>
-  </div>
-
-  <section class="mensaje">
-    <p>Gracias por acompañarnos a lo largo de este año. Cada proyecto que levantamos juntos se apoya en la confianza de clientes, proveedores y equipo.</p>
-    <p>Les deseamos una Navidad en paz junto a los suyos y un 2027 con nuevos proyectos para seguir construyendo.</p>
-    <div class="firma">Equipo Ingepro</div>
-  </section>
-
-  <div class="rotulo" aria-label="Rótulo">
-    <div><span>Proyecto</span><strong>Saludo de fin de año</strong></div>
-    <div><span>Destinatario</span><strong>Para vos</strong></div>
-    <div><span>Fecha</span><strong>Diciembre 2026</strong></div>
-    <div><span>Lámina</span><strong>01 / 01</strong></div>
-  </div>
-
-  <footer>INGEPRO S.A. · Ingeniería civil, infraestructura y BIM · Ciudad del Este, Paraguay</footer>
-</main>
+<div class="escena">
+  <video id="v" src="saludo.mp4" poster="portada.jpg" playsinline preload="auto"></video>
+  <button id="play" type="button" aria-label="Reproducir saludo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l16 9-16 9z"/></svg>
+  </button>
+</div>
+<script>
+const v = document.getElementById('v');
+const b = document.getElementById('play');
+function reproducir() { b.hidden = true; v.controls = true; v.play(); }
+b.addEventListener('click', reproducir);
+v.addEventListener('click', () => { if (!b.hidden) reproducir(); });
+v.addEventListener('ended', () => { v.controls = false; b.hidden = false; v.currentTime = 0; });
+</script>
 </body>
 </html>
