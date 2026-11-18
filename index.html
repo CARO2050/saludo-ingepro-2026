@@ -60,19 +60,15 @@ function primerToque(e) {
   if (e) { e.preventDefault(); e.stopPropagation(); }
   sonido.hidden = true;
   pantallaCompleta();
-  if (v.muted) { v.muted = false; v.currentTime = 0; }
+  v.muted = false; v.currentTime = 0;
   v.play().catch(() => {});
 }
 
 async function arrancar() {
-  try {
-    v.muted = false;
-    await v.play();
-  } catch (e) {
-    try { v.muted = true; await v.play(); } catch (e2) {}
-  }
+  v.muted = true;
+  try { await v.play(); } catch (e) {}
   capa.hidden = false;
-  sonido.hidden = !v.muted;
+  sonido.hidden = false;
 }
 
 let iniciado = false;
@@ -81,8 +77,7 @@ capa.addEventListener('click', (e) => {
   if (v.paused) { if (v.ended) v.currentTime = 0; v.play().catch(() => {}); } else { v.pause(); }
 });
 sonido.addEventListener('click', (e) => { iniciado = true; primerToque(e); });
-v.addEventListener('volumechange', () => { if (!v.muted) sonido.hidden = true; });
-v.addEventListener('ended', () => { sonido.hidden = true; iniciado = false; v.load(); salirPantallaCompleta(); });
+v.addEventListener('ended', () => { iniciado = false; salirPantallaCompleta(); v.load(); sonido.hidden = false; });
 arrancar();
 </script>
 </body>
